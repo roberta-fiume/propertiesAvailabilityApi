@@ -11,13 +11,11 @@
   
     name: 'App',
 
-    methods: {
-      
-    },
-
     components: {
       "google-map": googleMap
     }
+
+
 
   
   }
