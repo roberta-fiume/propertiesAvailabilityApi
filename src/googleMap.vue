@@ -20,11 +20,23 @@
                 center: new google.maps.LatLng(51.501527,-0.1921837)
             }
             const map = new google.maps.Map(element, options);
+
             map.addListener('click', function(event) {
-                    console.log("listener added to map after clicked and this is my event", event);
-                    console.log("my latitude is", event.qa.x);
-                    console.log("my longitude is", event.qa.y);
-            });
+                const lat = event.qa.y;
+                const long = event.qa.x;
+                const coordinates = getCoordinates(lat, long);
+                console.log("THESE ARE MY COORDINATES:", coordinates)
+            })
+            
+            function getCoordinates(latY, longX) {
+                const coordinates = {"latitude": latY, "longitude": longX}
+                return coordinates
+            }
+
+            function createBoundingBox(latMin, latMax, longMin, longMax) {
+                const boundingCoordinates = {"latitudeMin": latMin, "latitudeMax": latMax, "longitudeMin": longMin, "longitudeMax": longMax} 
+                return boundingCoordinates
+            }
         }
     }
 </script>
