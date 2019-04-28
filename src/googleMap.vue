@@ -1,5 +1,9 @@
 <template>
-    <div class="google-map" :id="mapName"></div>
+    <div class="google-map" :id="mapName">
+         <div>{{properties}}</div>
+    </div>
+   
+    
 </template>
 
 <script>
@@ -11,7 +15,15 @@
         data() {
             return {
                 mapName: this.name + "-map",
+                    properties: "privates",
+
+                      watch: {
+                       properties() {
+                        console.log("I am changed:", this.properties)
+                        }
+                    }
             }
+  
         },
         mounted() {
             const element = document.getElementById(this.mapName);
@@ -35,6 +47,7 @@
                 const longMin = long - b;
                 const boundingCoordinates = {"latitudeMax": latMax, "latitudeMin": latMin, "longitudeMax": longMax, "longitudeMin": longMax} 
                 console.log("these are the LatMax, LatMin, LongMax, LongMin",boundingCoordinates);
+
                 const endMarker = new google.maps.Marker({
                     position: new google.maps.LatLng(lat,long),
                     map: map,
@@ -45,6 +58,8 @@
                     map: map,
                     draggable: false,
                 });
+                console.log("THIS IS P1:", p1.position);
+                
                    const p2 = new google.maps.Marker({
                     position: new google.maps.LatLng(latMin,long),
                     map: map,
@@ -60,8 +75,35 @@
                     map: map,
                     draggable: false,
                 });
-            })
 
+                 getProperties(latMin,latMax,longMin,longMax);
+
+                function getProperties(latMinCoord,latMaxCoord,longMinCoord,longMaxCoord) {
+                    console.log("Hello, I work!");
+                    const axios = require('axios');
+                    let baseURL = "http://api.zoopla.co.uk/api/v1/property_listings.js";
+                    let apiKey = "api_key=";
+                    let apiKeyValue = "p6b66f54ehddddjkd7kkm7ec";
+                    let latMinUrl = "lat_min=";
+                    let latMaxUrl  = "lat_max=";
+                    let longMinUrl  = "lon_min=";
+                    let longMaxUrl  = "lon_max=";
+                    let url = baseURL + "?" + apiKey + apiKeyValue + "&"+ latMinUrl + latMinCoord + "&" + latMaxUrl + latMaxCoord + "&" + longMinUrl + longMinCoord +"&" + longMaxUrl + longMaxCoord;
+                    console.log("THIS IS MY URL:",url);
+                    axios.get(url)
+                    .then(response => {
+                        console.log("THIS IS MY RESPONSE",response);
+                        this.properties = response.data.result_count;
+                    })
+                    .catch(function (error) {
+                        console.log("THIS IS THE ERROR:", error);
+                    });
+                }
+            })
+        },
+
+        methods: {
+     
         }
     }
 </script>
