@@ -1,31 +1,35 @@
 <template>
-    <div class="google-map" :id="mapName">
-         <div>{{properties}}</div>
-    </div>
-   
-    
+<div class="map-container">
+    <div class="google-map" :id="mapName"></div>
+    <h1>the total of properties is: {{getUpdatedProperties}}</h1>
+</div>
 </template>
 
 <script>
     export default {
-        name: 'google-map',
+        name: 'google-map',      
 
         props: ['name'],
 
         data() {
             return {
-                mapName: this.name + "-map",
-                    properties: "privates",
-
-                      watch: {
-                       properties() {
-                        console.log("I am changed:", this.properties)
-                        }
-                    }
+                mapName: this.name + "-map", 
+                properties: "private", 
+                numberOfProperties: 0
             }
-  
         },
+
+        computed: {
+              getUpdatedProperties: {
+                get: function() {
+                  console.log("calling computed!!!!!!");
+                  return this.numberOfProperties;
+                }
+              }
+        },
+
         mounted() {
+
             const element = document.getElementById(this.mapName);
             const options = {
                 zoom: 14,
@@ -76,10 +80,9 @@
                     draggable: false,
                 });
 
-                 getProperties(latMin,latMax,longMin,longMax);
-
                 function getProperties(latMinCoord,latMaxCoord,longMinCoord,longMaxCoord) {
                     console.log("Hello, I work!");
+                    console.log("this inside getProperties", this);
                     const axios = require('axios');
                     let baseURL = "http://api.zoopla.co.uk/api/v1/property_listings.js";
                     let apiKey = "api_key=";
@@ -93,12 +96,19 @@
                     axios.get(url)
                     .then(response => {
                         console.log("THIS IS MY RESPONSE",response);
-                        this.properties = response.data.result_count;
+                        console.log("this inside then", this);
+                        this.numberOfProperties = response.data.result_count;
                     })
                     .catch(function (error) {
                         console.log("THIS IS THE ERROR:", error);
                     });
-                }
+                };
+
+                const getPropertiesFunc = getProperties.bind(this);
+
+                console.log("this inside add Listener", this);
+                // getProperties(latMin,latMax,longMin,longMax);
+                getPropertiesFunc(latMin,latMax,longMin,longMax);
             })
         },
 
