@@ -11,6 +11,12 @@
   
     name: 'App',
 
+    // data() {
+    //   return {
+      
+    //   }
+    // },
+
     components: {
       "google-map": googleMap
     }

@@ -2,14 +2,14 @@
 <div class="map-container">
     <div class="google-map" :id="mapName"></div>
         <h1>the total of properties is: {{numberOfProperties}}</h1>
-        <h1> {{title}} </h1>
-    <result-box></result-box>
+
+    <!-- <result-box :numberOfPropertiesProp="numberOfProperties"></result-box> -->
   
 </div>
 </template>
 
 <script>
-import result from './result.vue'
+// import result from './result.vue'
 
     export default {
         name: 'google-map',      
@@ -20,20 +20,15 @@ import result from './result.vue'
             return {
                 mapName: this.name + "-map", 
                 numberOfProperties: 0,
-                newProperties: 0,
-                title: 'Welcome to title changer'
             }
         },
 
             created() {
-                console.log("I AM CREATEDDDDD", this.numberOfProperties);
-                if (this.numberOfProperties == "0") {
-           
-                }
+                this.numberOfProperties = 0
+                console.log("I AM THE PARENT CREATEDDDDD ", this.numberOfProperties);
             },
 
         watch: {
-         
             numberOfProperties: function(val) {
                 console.log("calling computed!!!!!!");
                 this.numberOfProperties = val;
@@ -50,10 +45,7 @@ import result from './result.vue'
             }
             const map = new google.maps.Map(element, options);
 
-           
-
             map.addListener('click', function(event) {
-
                 const lat = event.latLng.lat();
                 const long = event.latLng.lng();
                 const coordinates = {"latitude": lat, "longitude": long};
@@ -93,7 +85,7 @@ import result from './result.vue'
                 });
 
                 function getProperties(latMinCoord,latMaxCoord,longMinCoord,longMaxCoord) {
-                    // const axios = require('axios');
+                    const axios = require('axios');
                     let baseURL = "http://api.zoopla.co.uk/api/v1/property_listings.js";
                     let apiKey = "api_key=";
                     let apiKeyValue = "p6b66f54ehddddjkd7kkm7ec";
@@ -102,48 +94,35 @@ import result from './result.vue'
                     let longMinUrl  = "lon_min=";
                     let longMaxUrl  = "lon_max=";
                     let url = baseURL + "?" + apiKey + apiKeyValue + "&"+ latMinUrl + latMinCoord + "&" + latMaxUrl + latMaxCoord + "&" + longMinUrl + longMinCoord +"&" + longMaxUrl + longMaxCoord;
-                    return axios.get(url);
-                    // .then(response => {
-                    //     console.log("THIS IS MY RESPONSE", response);
-                    //     this.numberOfProperties = response.data.result_count;
-                    //     console.log("this.numberOfProperties", this.numberOfProperties);
-                    // })
-                    // .catch(function (error) {
-                    //     console.log("THIS IS THE ERROR:", error);
-                    // });
+                    axios.get(url)
+                    .then(response => {
+                        console.log("THIS IS MY RESPONSE", response);
+                        this.numberOfProperties = response.data.result_count;
+                           console.log("I AM THIS IN AXIOS:",this)
+                        console.log("this.numberOfProperties", this.numberOfProperties);
+                    })
+                    .catch(function (error) {
+                        console.log("THIS IS THE ERROR:", error);
+                    });
                 };
 
-                // const getPropertiesFunc = getProperties.bind(this);
-                // let axiosGet = getPropertiesFunc(latMin,latMax,longMin,longMax);
+                const getPropertiesFunc = getProperties.bind(this);
+                let axiosGet = getPropertiesFunc(latMin,latMax,longMin,longMax);
              
-            
-            });
+               console.log("I AM THIS IN LISTENER:",this)
 
-                const axios = require('axios');
-                //    let axiosGet = getProperties(latMin,latMax,longMin,longMax);
-                axios.get('http://api.zoopla.co.uk/api/v1/property_listings.js?api_key=p6b66f54ehddddjkd7kkm7ec&lat_min=51.479679206083894&lat_max=51.52967920608389&lon_min=-0.21490918675535794&lon_max=-0.16490918675535796')
-                .then(response => {
-                    console.log("THIS IS MY RESPONSE", response);
-                    this.numberOfProperties = response.data.result_count;
-                    console.log("this.numberOfProperties", this.numberOfProperties);
-                })
-                .catch(function (error) {
-                    console.log("THIS IS THE ERROR:", error);
-                });
-
-            console.log("numberOfProperties in mounted", this.numberOfProperties);
+            }.bind(this));
         },
 
         methods: {
-            changeTitle() {
-                this.title = this.title.toUpperCase();
-                return this.title;
+            getAveragePrice(listing, numberOfProperties) {
+
             }
         },
 
-        components: {
-            "result-box": result
-        }
+        // components: {
+        //     "result-box": result
+        // }
     }
 </script>
 
