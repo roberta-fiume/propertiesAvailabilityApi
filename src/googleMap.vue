@@ -1,15 +1,16 @@
 <template>
 <div class="map-container">
     <div class="google-map" :id="mapName"></div>
-        <h1>the total of properties is: {{numberOfProperties}}</h1>
-
-    <!-- <result-box :numberOfPropertiesProp="numberOfProperties"></result-box> -->
-  
+    <result-box 
+        :numberOfPropertiesProp="numberOfProperties" 
+        :averagePriceProp="averagePrice" 
+        :showResultBoxProp="showResultBox">
+    </result-box>
 </div>
 </template>
 
 <script>
-// import result from './result.vue'
+import result from './result.vue'
 
     export default {
         name: 'google-map',      
@@ -20,20 +21,24 @@
             return {
                 mapName: this.name + "-map", 
                 numberOfProperties: 0,
+                averagePrice: 0,
+                showResultBox: false
             }
         },
 
-            created() {
-                this.numberOfProperties = 0
-                console.log("I AM THE PARENT CREATEDDDDD ", this.numberOfProperties);
-            },
+        created() {
+            this.numberOfProperties = 0;
+            this.averagePrice = 0;
+        },
 
         watch: {
             numberOfProperties: function(val) {
-                console.log("calling computed!!!!!!");
                 this.numberOfProperties = val;
-                console.log("I AM WATCHED:", this.numberOfProperties);
-                 return this.numberOfProperties;
+                return this.numberOfProperties;
+            },
+              averagePrice: function(val) {
+                this.averagePrice = val;
+                return this.averagePrice;
             }
         },
 
@@ -94,12 +99,10 @@
                     let longMinUrl  = "lon_min=";
                     let longMaxUrl  = "lon_max=";
                     let url = baseURL + "?" + apiKey + apiKeyValue + "&"+ latMinUrl + latMinCoord + "&" + latMaxUrl + latMaxCoord + "&" + longMinUrl + longMinCoord +"&" + longMaxUrl + longMaxCoord;
-                    axios.get(url)
-                    .then(response => {
-                        console.log("THIS IS MY RESPONSE", response);
+                    axios.get(url).then(response => {
                         this.numberOfProperties = response.data.result_count;
-                           console.log("I AM THIS IN AXIOS:",this)
-                        console.log("this.numberOfProperties", this.numberOfProperties);
+                        this.averagePrice = this.getAveragePrice(response.data.listing, this.numberOfProperties);
+                        this.showResultBox = true;
                     })
                     .catch(function (error) {
                         console.log("THIS IS THE ERROR:", error);
@@ -107,22 +110,31 @@
                 };
 
                 const getPropertiesFunc = getProperties.bind(this);
-                let axiosGet = getPropertiesFunc(latMin,latMax,longMin,longMax);
-             
-               console.log("I AM THIS IN LISTENER:",this)
-
+                getPropertiesFunc(latMin,latMax,longMin,longMax);
             }.bind(this));
         },
 
         methods: {
             getAveragePrice(listing, numberOfProperties) {
-
-            }
+                let totalPrice = 0;
+                for (var i=0; i < listing.length; i++) {
+                    totalPrice += parseInt(listing[i].price);
+                }
+                return totalPrice/numberOfProperties;
+            },
+            // moveResultBoxToClick() {
+            //     var theThing = document.getElementById("resultBox");
+            //     var container = document.querySelector(".google-map");
+            //     var xPosition = event.clientX - container.getBoundingClientRect().left - (theThing.clientWidth / 2);
+            //     var yPosition = event.clientY - container.getBoundingClientRect().top - (theThing.clientHeight / 2);
+            //     theThing.style.left = xPosition + "px";
+            //     theThing.style.top = yPosition + "px";
+            // }
         },
 
-        // components: {
-        //     "result-box": result
-        // }
+        components: {
+            "result-box": result 
+        }
     }
 </script>
 
@@ -132,5 +144,14 @@
   height: 600px;
   margin: 0 auto;
   background: gray;
+
+  /* position: relative;
+	left:100px;
+	width: 500px;
+	height: 300px;
+	border: 1px black solid;
+	overflow: hidden;
+	background-color: #EEE;
+	cursor: pointer; */
 }
 </style>
