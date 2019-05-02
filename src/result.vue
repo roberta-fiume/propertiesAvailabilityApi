@@ -1,13 +1,13 @@
 <template>
-        <div v-if="showResultBoxProp" id="resultBox">
-            <h1> {{numberOfPropertiesProp}} Properties </h1>
-            <h1>Average price is: £{{averagePriceProp}}</h1>     
+        <div v-if="showResultBox" id="resultBox">
+            <h1> {{numberOfProperties}} Properties </h1>
+            <h1>Average price is: £{{averagePrice}}</h1>     
        </div>
 </template>
 
 <script>
 export default {
-    props: ['numberOfPropertiesProp', 'averagePriceProp', 'showResultBoxProp'],
+    props: ['numberOfProperties', 'averagePrice', 'showResultBox'],
 
     data() {
         return {

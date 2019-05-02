@@ -2,9 +2,9 @@
 <div class="map-container">
     <div class="google-map" :id="mapName"></div>
     <result-box 
-        :numberOfPropertiesProp="numberOfProperties" 
-        :averagePriceProp="averagePrice" 
-        :showResultBoxProp="showResultBox">
+        :numberOfProperties="numberOfProperties" 
+        :averagePrice="averagePrice" 
+        :showResultBox="showResultBox">
     </result-box>
 </div>
 </template>
@@ -31,17 +31,6 @@ import result from './result.vue'
             this.averagePrice = 0;
         },
 
-        watch: {
-            numberOfProperties: function(val) {
-                this.numberOfProperties = val;
-                return this.numberOfProperties;
-            },
-              averagePrice: function(val) {
-                this.averagePrice = val;
-                return this.averagePrice;
-            }
-        },
-
         mounted() {
             const element = document.getElementById(this.mapName);
             const options = {
@@ -53,7 +42,6 @@ import result from './result.vue'
             map.addListener('click', function(event) {
                 const lat = event.latLng.lat();
                 const long = event.latLng.lng();
-                const coordinates = {"latitude": lat, "longitude": long};
                 const a = 0.025;
                 const b = 0.025;
                 const latMax = this.createLatitudeMax(lat,a);
@@ -68,14 +56,13 @@ import result from './result.vue'
                 function getProperties() {
                     const axios = require('axios');
                     let url = this.createUrl(latMin,latMax,longMin,longMax);
-                    console.log("THIS IS MY URL", url)
                     axios.get(url).then(response => {
                         this.numberOfProperties = response.data.result_count;
                         this.averagePrice = this.getAveragePrice(response.data.listing, this.numberOfProperties);
                         this.showResultBox = true;
                     })
                     .catch(function (error) {
-                        console.log("THIS IS THE ERROR:", error);
+                        console.log("This is an error placeholder, should be removed when proper error handling is implemented", error);
                     });
                 };
                 const getPropertiesFunc = getProperties.bind(this);
@@ -122,7 +109,6 @@ import result from './result.vue'
                     map: map,
                     draggable: false,
                 });
-                console.log("THIS IS P2:", p2)
                 return p2
             },
 
