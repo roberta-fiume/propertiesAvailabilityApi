@@ -149,8 +149,7 @@ import result from './result.vue'
                 }
                 return totalPrice/numberOfProperties;
             },
-
-         
+ 
         },
 
         components: {
@@ -166,14 +165,5 @@ import result from './result.vue'
   margin: 0 auto;
   background: gray;
   margin-bottom: 20px;
-
-  /* position: relative;
-	left:100px;
-	width: 500px;
-	height: 300px;
-	border: 1px black solid;
-	overflow: hidden;
-	background-color: #EEE;
-	cursor: pointer; */
 }
 </style>
