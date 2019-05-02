@@ -1,8 +1,7 @@
 <template>
         <div v-if="showResultBoxProp" id="resultBox">
-        <!-- <div id="resultBox"> -->
-            <h1>the total of properties is: {{numberOfPropertiesProp}}</h1>
-            <h1>the average price is: {{averagePriceProp}}</h1>
+            <h1> {{numberOfPropertiesProp}} Properties </h1>
+            <h1>Average price is: £{{averagePriceProp}}</h1>     
        </div>
 </template>
 
@@ -14,14 +13,6 @@ export default {
         return {
             
         }
-    },
-   
-
-    created() {
-        this.newProperty;
-    },
-
-    methods: {
     }
 }
 </script>
@@ -30,18 +21,15 @@ export default {
 
 #resultBox {
     display: flex;
-    width: 500px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 600px;
     height: 200px;
-    border: 2px solid blue;
-
-    /* position: relative;
-  width:40px;
-  height:40px;
-	left: 50px;
-	top: 50px;
-  background-color:red;
-	transition: left .5s cubic-bezier(.42,-0.3,.78,1.25), 
-			top .5s cubic-bezier(.42,-0.3,.78,1.25); */
+    border: 9px solid #42a7f4;
+    margin-left: auto;
+    margin-right: auto;
+    color: #42a7f4;
 }
 
 </style>
