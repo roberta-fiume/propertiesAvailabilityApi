@@ -131,7 +131,7 @@ import result from './result.vue'
             },
 
             createUrl(latMinCoord,latMaxCoord,longMinCoord,longMaxCoord) {
-                let baseURL = "http://api.zoopla.co.uk/api/v1/property_listings.js";
+                let baseURL = "https://api.zoopla.co.uk/api/v1/property_listings.js";
                 let apiKey = "api_key=";
                 let apiKeyValue = "p6b66f54ehddddjkd7kkm7ec";
                 let latMinUrl = "lat_min=";
